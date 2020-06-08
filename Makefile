@@ -2,29 +2,6 @@
 
 .PHONY: lint build publish assets
 
-OS_ARCH = ""
-ifeq ($(OS),Windows_NT)
-	ifeq ($(PROCESSOR_ARCHITEW6432),AMD64)
-		OS_ARCH := windows_amd64
-	else
-		OS_ARCH := windows_386
-	endif
-else
-	UNAME_S := $(shell uname -s)
-	ifeq ($(UNAME_S),Linux)
-		OS_ARCH := linux_amd64
-	endif
-	ifeq ($(UNAME_S),Darwin)
-		OS_ARCH := darwin_amd64
-	endif
-endif
-
-# ln -sf ~/Documents/app-builder/dist/app-builder_darwin_amd64/app-builder ~/Documents/electron-builder/node_modules/app-builder-bin/mac/app-builder
-# cp ~/Documents/app-builder/dist/app-builder_linux_amd64/app-builder ~/Documents/electron-builder/node_modules/app-builder-bin/linux/x64/app-builder
-build: assets
-	go build -ldflags='-s -w' -o dist/app-builder_$(OS_ARCH)/app-builder
-
-
 build-all: assets
 	./scripts/build.sh
 

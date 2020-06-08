@@ -3,8 +3,13 @@
 dist/
 vendor/
 
-app-builder-bin/readme.md
-app-builder-bin/**/app-builder
-app-builder-bin/win/**/app-builder.exe
+app-builder-bin-linux-ia32
+app-builder-bin-linux-x64
+app-builder-bin-linux-arm
+app-builder-bin-linux-arm64
+app-builder-bin-darwin-x64
+app-builder-bin-win32-x32
+app-builder-bin-win32-x64
+tmp
 
 /.idea/shelf/

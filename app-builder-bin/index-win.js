@@ -7,7 +7,7 @@ function getPath() {
     return "app-builder"
   }
 
-  return path.join(__dirname, "bin", "app-builder")
+  return path.join(__dirname, "bin", "app-builder.exe")
 }
 
 exports.appBuilderPath = getPath()

@@ -1,3 +1,17 @@
+# Electric UI App Builder
+
+This is a fork of [develar/app-builder](https://github.com/develar/app-builder) with an alternative publishing strategy that doesn't include the matrix of builds in the npm package.
+
+It works in conjunction with a [Yarn V2 plugin](https://github.com/electricui/yarn-redirect-app-builder) to redirect dependencies on `app-builder-bin` to the correct OS and Arch version. This saves about 100MB per installation.
+
+## Building
+
+In order to build this yourself, first install `go-bindata` with `go get -u github.com/go-bindata/go-bindata/`. You will also need `jq`.
+
+To update the dependencies, run `make update-deps`.
+
+To build, run `make build-all`.
+
 # app-builder
 
 Generic helper tool to build app in a distributable formats.

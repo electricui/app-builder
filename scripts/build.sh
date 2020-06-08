@@ -1,31 +1,60 @@
 #!/usr/bin/env bash
 set -ex
 
-cd app-builder-bin
+# Recreate the temporary directory
+rm -rf tmp
+mkdir tmp
 
-rm -rf win
-rm -rf mac
-rm -rf linux
+# Process the package.json
+jq '.repository="https://github.com/electricui/app-builder/" | .files = ["*.js", "index.d.ts", "bin"]' app-builder-bin/package.json > tmp/package.json
 
-mkdir mac
-GOOS=darwin GOARCH=amd64 go build -ldflags='-s -w' -o mac/app-builder ..
+clean () {
+    # Clean up previous build artefacts 
+    rm -rf "app-builder-bin-$1-$2"
 
-mkdir -p linux/ia32
-GOOS=linux GOARCH=386 go build -ldflags='-s -w' -o linux/ia32/app-builder ..
+    # Create the directories
+    mkdir -p app-builder-bin-$1-$2/bin
+} 
 
-mkdir -p linux/x64
-GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o linux/x64/app-builder ..
+clean "linux" "ia32"
+clean "linux" "x64"
+clean "linux" "arm"
+clean "linux" "arm64"
+clean "darwin" "x64"
+clean "win32" "x32"
+clean "win32" "x64"
 
-mkdir -p linux/arm
-GOOS=linux GOARCH=arm go build -ldflags='-s -w' -o linux/arm/app-builder ..
+# Run our builds
+GOOS=linux GOARCH=386 go build -ldflags='-s -w' -o app-builder-bin-linux-ia32/bin/app-builder .
+GOOS=linux GOARCH=amd64 go build -ldflags='-s -w' -o app-builder-bin-linux-x64/bin/app-builder .
+GOOS=linux GOARCH=arm go build -ldflags='-s -w' -o app-builder-bin-linux-arm/bin/app-builder .
+GOOS=linux GOARCH=arm64 go build -ldflags='-s -w' -o app-builder-bin-linux-arm64/bin/app-builder .
+GOOS=darwin GOARCH=amd64 go build -ldflags='-s -w' -o app-builder-bin-darwin-x64/bin/app-builder .
+GOOS=windows GOARCH=386 go build -o app-builder-bin-win32-x32/bin/app-builder.exe .
+GOOS=windows GOARCH=amd64 go build -ldflags='-s -w' -o app-builder-bin-win32-x64/bin/app-builder.exe .
 
-mkdir -p linux/arm64
-GOOS=linux GOARCH=arm64 go build -ldflags='-s -w' -o linux/arm64/app-builder ..
+post_process () {
+    # Copy our JS and TS definiton files
+    if [ "$1" == "win32" ]
+    then
+        cp app-builder-bin/index-win.js app-builder-bin-$1-$2/index.js
+    else
+        cp app-builder-bin/index.js app-builder-bin-$1-$2/index.js
+    fi
 
-mkdir -p win/ia32
-# set GOARCH=386
-GOOS=windows GOARCH=386 go build -o win/ia32/app-builder.exe ..
+    cp app-builder-bin/index.d.ts app-builder-bin-$1-$2/index.d.ts
 
-mkdir -p win/x64
-# set GOARCH=amd64
-GOOS=windows GOARCH=amd64 go build -o win/x64/app-builder.exe ..
+    # Copy the readme
+    cp readme.md app-builder-bin-$1-$2/README.md
+
+    # Create our package.json
+    jq ".name=\"@electricui/app-builder-bin-$1-$2\" | .description=\"app-builder precompiled binary for $2 $1\"" tmp/package.json > "app-builder-bin-$1-$2/package.json"
+} 
+
+post_process "linux" "ia32"
+post_process "linux" "x64"
+post_process "linux" "arm"
+post_process "linux" "arm64"
+post_process "darwin" "x64"
+post_process "win32" "x32"
+post_process "win32" "x64"
