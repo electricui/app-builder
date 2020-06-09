@@ -16,10 +16,8 @@ assets:
 	go-bindata -o ./pkg/package-format/bindata.go -pkg package_format -prefix ./pkg/package-format ./pkg/package-format/appimage/templates
 	go-bindata -o ./pkg/package-format/snap/snapScripts.go -pkg snap -prefix ./pkg/package-format/snap ./pkg/package-format/snap/desktop-scripts
 
-publish:
-	#make lint
-	ln -f readme.md app-builder-bin/readme.md
-	npm publish app-builder-bin
+publish: build-all
+	./scripts/publish.sh
 
 update-deps:
 	go get -u -d
