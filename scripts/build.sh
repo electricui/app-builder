@@ -6,7 +6,7 @@ rm -rf tmp
 mkdir tmp
 
 # Process the package.json
-jq '.repository="https://github.com/electricui/app-builder/" | .files = ["*.js", "index.d.ts", "bin"]' app-builder-bin/package.json > tmp/package.json
+jq '.repository="https://github.com/electricui/app-builder/" | .files = ["*.js", "index.d.ts", "bin"] | .preferUnplugged = true' app-builder-bin/package.json > tmp/package.json
 
 clean () {
     # Clean up previous build artefacts 
