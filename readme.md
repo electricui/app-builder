@@ -6,7 +6,7 @@ It works in conjunction with a [Yarn V2 plugin](https://github.com/electricui/ya
 
 ## Building
 
-In order to build this yourself, first install `go-bindata` with `go get -u github.com/go-bindata/go-bindata/`. You will also need `jq`.
+In order to build this yourself, first install `go-bindata` with `go get -u github.com/go-bindata/go-bindata/go-bindata`. You will also need `jq`.
 
 To update the dependencies, run `make update-deps`.
 
